@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>MathQuiz Adventure</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #87ceeb;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #quiz-container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+        margin: 0 auto;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+      }
+      #first{
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+        margin: 0 auto;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+      }
+
+      #question {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      #options {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .option {
+        cursor: pointer;
+        font-size: 18px;
+        padding: 10px 20px;
+        margin: 10px;
+        background-color: #ffa07a;
+        border: 1px solid #e47878;
+        border-radius: 5px;
+      }
+
+      #result {
+        margin-top: 20px;
+        font-size: 24px;
+      }
+
+      #timer-bar {
+        width: 100%;
+        background-color: #ff0000;
+        height: 20px;
+        border-radius: 5px;
+        transition: width 0.5s ease-in-out;
+      }
+      #restart-button {
+    display: none; /* Initially hide the button */
+    margin-top: 20px;
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+#quiz-title {
+        font-size: 36px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333; /* Change the color to your preference */
+    } 
+#restart-button:hover {
+    background-color: #45a049;
+}
+#start-button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #start-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="first">
+      <div id="quiz-title">Maths Quiz</div>
+      <button id="start-button" onclick="startQuiz2()">Start Math Test</button>
+    </div>
+    
+    <div id="quiz-container">
+      <div id="question"></div>
+      <div id="options"></div>
+      <div id="result"></div>
+      <div id="timer-bar"></div>
+     
+      <button id="restart-button" onclick="restartQuiz()">Restart Test</button>
+      
+    </div>
+
+    <script>
+document.getElementById("quiz-container").style.display = "none";
+
+document.getElementById("timer-bar").style.display = "none";
+
+document.getElementById("timer-bar").style.display = "block";
+
+   function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+let currentQuestion = 0;
+let correctAnswers = 0;
+
+
+      const questions = [
+    { question: "What is 5 + 3?", answer: 8, options: [8, 7, 6, 9] },
+    { question: "What is 12 - 5?", answer: 7, options: [7, 8, 4, 10] },
+    { question: "What is 3 x 2?", answer: 6, options: [6, 9, 12, 4] },
+    { question: "What is 18 / 2?", answer: 9, options: [9, 8, 7, 10] },
+    { question: "What is 4 x 7?", answer: 28, options: [28, 35, 42, 14] },
+    { question: "What is 15 - 9?", answer: 6, options: [6, 9, 12, 3] },
+    { question: "What is 10 + 20?", answer: 30, options: [30, 25, 40, 15] },
+    { question: "What is 9 - 3?", answer: 6, options: [6, 8, 4, 12] },
+    { question: "What is 6 x 5?", answer: 30, options: [30, 35, 25, 20] },
+    { question: "What is 27 / 3?", answer: 9, options: [9, 6, 12, 3] },
+    { question: "What is 2 + 2?", answer: 4, options: [4, 5, 3, 6] },
+    { question: "What is 15 - 7?", answer: 8, options: [8, 10, 6, 12] },
+    { question: "What is 8 x 4?", answer: 32, options: [32, 24, 40, 16] },
+    { question: "What is 36 / 6?", answer: 6, options: [6, 5, 7, 8] },
+    { question: "What is 7 + 6?", answer: 13, options: [13, 14, 12, 15] },
+    { question: "What is 20 - 9?", answer: 11, options: [11, 12, 10, 8] },
+    { question: "What is 5 x 6?", answer: 30, options: [30, 25, 35, 40] },
+    { question: "What is 48 / 6?", answer: 8, options: [8, 6, 7, 9] },
+    { question: "What is 10 + 30?", answer: 40, options: [40, 35, 45, 50] },
+    { question: "What is 15 - 5?", answer: 10, options: [10, 12, 8, 7] },
+    { question: "What is 7 x 7?", answer: 49, options: [49, 42, 56, 63] },
+    { question: "What is 64 / 8?", answer: 8, options: [8, 7, 9, 10] },
+    { question: "What is 9 + 9?", answer: 18, options: [18, 20, 16, 15] },
+    { question: "What is 24 - 12?", answer: 12, options: [12, 14, 10, 16] },
+    { question: "What is 6 x 8?", answer: 48, options: [48, 56, 40, 64] },
+    { question: "What is 72 / 9?", answer: 8, options: [8, 9, 7, 10] },
+    { question: "What is 3 + 7?", answer: 10, options: [10, 12, 8, 9] },
+    { question: "What is 18 - 8?", answer: 10, options: [10, 12, 16, 14] },
+    { question: "What is 5 x 9?", answer: 45, options: [45, 50, 40, 35] },
+    { question: "What is 63 / 7?", answer: 9, options: [9, 8, 10, 11] },
+    { question: "What is 6 + 4?", answer: 10, options: [10, 8, 12, 6] },
+    { question: "What is 21 - 14?", answer: 7, options: [7, 6, 8, 9] },
+    { question: "What is 8 x 6?", answer: 48, options: [48, 40, 56, 64] },
+    { question: "What is 56 / 7?", answer: 8, options: [8, 7, 9, 10] },
+    { question: "What is 4 + 5?", answer: 9, options: [9, 10, 8, 7] },
+    { question: "What is 16 - 9?", answer: 7, options: [7, 6, 8, 10] },
+    { question: "What is 7 x 8?", answer: 56, options: [56, 63, 49, 42] },
+    { question: "What is 70 / 10?", answer: 7, options: [7, 6, 8, 9] },
+    { question: "What is 2 + 8?", answer: 10, options: [10, 12, 8, 9] },
+    { question: "What is 14 - 6?", answer: 8, options: [8, 7, 10, 12] },
+    { question: "What is 9 x 7?", answer: 63, options: [63, 56, 49, 42] },
+    { question: "What is 81 / 9?", answer: 9, options: [9, 8, 10, 11] },
+    { question: "What is 6 + 6?", answer: 12, options: [12, 10, 8, 14] },
+    { question: "What is 27 - 12?", answer: 15, options: [15, 14, 16, 13] },
+    { question: "What is 8 x 7?", answer: 56, options: [56, 63, 49, 42] },
+    { question: "What is 84 / 12?", answer: 7, options: [7, 6, 8, 9] },
+    { question: "What is 3 + 6?", answer: 9, options: [9, 8, 7, 10] },
+    { question: "What is 15 - 6?", answer: 9, options: [9, 8, 10, 12] },
+    { question: "What is 9 x 8?", answer: 72, options: [72, 64, 56, 80] },
+    { question: "What is 90 / 10?", answer: 9, options: [9, 8, 7, 10] },
+    { question: "What is 7 + 5?", answer: 12, options: [12, 10, 14, 8] },
+    { question: "What is 22 - 11?", answer: 11, options: [11, 10, 12, 13] },
+    { question: "What is 6 x 9?", answer: 54, options: [54, 45, 63, 72] },
+    { question: "What is 99 / 11?", answer: 9, options: [9, 8, 10, 11] },
+    { question: "What is 4 + 6?", answer: 10, options: [10, 12, 8, 14] },
+    { question: "What is 19 - 9?", answer: 10, options: [10, 11, 8, 12] },
+    { question: "What is 9 x 9?", answer: 81, options: [81, 72, 63, 90] },
+    { question: "What is 108 / 12?", answer: 9, options: [9, 8, 10, 11] },
+    { question: "What is 5 + 7?", answer: 12, options: [12, 10, 14, 8] },
+    { question: "What is 30 - 12?", answer: 18, options: [18, 16, 20, 22] },
+    { question: "What is 7 x 9?", answer: 63, options: [63, 56, 72, 81] },
+    { question: "What is 126 / 14?", answer: 9, options: [9, 8, 10, 11] },
+    { question: "What is 8 + 4?", answer: 12, options: [12, 10, 14, 16] },
+    { question: "What is 40 - 16?", answer: 24, options: [24, 20, 28, 32] },
+    { question: "What is 6 x 7?", answer: 42, options: [42, 49, 54, 63] },
+    { question: "What is 72 / 8?", answer: 9, options: [9, 8, 10, 12] },
+    { question: "What is 3 + 9?", answer: 12, options: [12, 15, 10, 14] },
+    { question: "What is 27 - 15?", answer: 12, options: [12, 14, 10, 16] },
+    { question: "What is 9 x 6?", answer: 54, options: [54, 45, 63, 72] },
+    { question: "What is 81 / 9?", answer: 9, options: [9, 8, 10, 11] },
+    { question: "What is 4 + 8?", answer: 12, options: [12, 10, 14, 16] },
+    { question: "What is 20 - 12?", answer: 8, options: [8, 10, 6, 14] },
+    { question: "What is 8 x 5?", answer: 40, options: [40, 45, 50, 35] },
+    { question: "What is 80 / 10?", answer: 8, options: [8, 7, 9, 10] },
+    { question: "What is 6 + 8?", answer: 14, options: [14, 12, 16, 18] },
+    { question: "What is 36 - 18?", answer: 18, options: [18, 20, 16, 14] },
+    { question: "What is 5 x 5?", answer: 25, options: [25, 20, 30, 35] },
+    { question: "What is 50 / 10?", answer: 5, options: [5, 6, 4, 7] },
+    { question: "What is 9 + 3?", answer: 12, options: [12, 10, 14, 16] },
+    { question: "What is 24 - 8?", answer: 16, options: [16, 18, 14, 20] },
+    { question: "What is 7 x 6?", answer: 42, options: [42, 49, 35, 56] },
+    { question: "What is 84 / 12?", answer: 7, options: [7, 6, 8, 9] },
+    { question: "What is 3 + 3?", answer: 6, options: [6, 5, 7, 8] },
+    { question: "What is 12 - 6?", answer: 6, options: [6, 7, 5, 8] },
+    { question: "What is 4 x 9?", answer: 36, options: [36, 40, 32, 45] },
+    { question: "What is 72 / 12?", answer: 6, options: [6, 5, 7, 8] },
+];
+
+
+shuffleArray(questions);
+
+// Select the first 10 questions for the test
+const selectedQuestions = questions.slice(0, 10);
+
+const totalTime = 30; // Total time for the test in seconds
+let timeLeft = totalTime;
+let timerInterval;
+
+function startQuiz() {
+  currentQuestion = 0;
+  correctAnswers = 0;
+
+  displayQuestion();
+  startTimer();
+}
+
+      
+
+function displayQuestion() {
+  if (currentQuestion < selectedQuestions.length) {
+    const questionText = selectedQuestions[currentQuestion].question;
+    const options = selectedQuestions[currentQuestion].options;
+    document.getElementById("quiz-container").style.opacity = "1"; // Show the container
+    document.getElementById("question").textContent = questionText;
+    const optionsContainer = document.getElementById("options");
+    optionsContainer.innerHTML = "";
+
+    options.forEach((option) => {
+      const optionElement = document.createElement("div");
+      optionElement.className = "option";
+      optionElement.textContent = option;
+      optionElement.onclick = () => checkAnswer(option);
+      optionsContainer.appendChild(optionElement);
+    });
+
+    document.getElementById("result").textContent = "";
+    restartTimer();
+  } else {
+    const quizContainer = document.getElementById("quiz-container");
+    quizContainer.style.opacity = "1"; // Show the container
+    document.getElementById("question").textContent = "Quiz Completed!";
+    document.getElementById("options").innerHTML = "";
+    document.getElementById(
+      "result"
+    ).textContent = `You answered ${correctAnswers} out of ${selectedQuestions.length} questions correctly.`;
+    clearInterval(timerInterval);
+    document.getElementById("timer-bar").style.opacity = "0";
+  }
+
+  if (currentQuestion >= selectedQuestions.length) {
+    document.getElementById("restart-button").style.display = "block"; // Show the button
+  } else {
+    document.getElementById("restart-button").style.display = "none"; // Hide the button
+  }
+}
+
+      function checkAnswer(selectedAnswer) {
+        const correctAnswer = questions[currentQuestion].answer;
+        if (selectedAnswer === correctAnswer) {
+          document.getElementById("result").textContent = "Correct!";
+          correctAnswers++;
+        } else {
+          document.getElementById("result").textContent =
+            "Incorrect. Try again!";
+        }
+
+        currentQuestion++;
+        setTimeout(displayQuestion, 1000); // Delay to show the result
+      }
+
+      function startTimer() {
+        timeLeft = totalTime;
+        const timerBar = document.getElementById("timer-bar");
+        timerBar.style.width = "100%";
+        timerBar.style.opacity = "1"; // Show the time bar
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          const widthPercentage = (timeLeft / totalTime) * 100;
+          timerBar.style.width = widthPercentage + "%";
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            endQuiz();
+          }
+        }, 1000);
+      }
+
+      function restartTimer() {
+        clearInterval(timerInterval);
+        startTimer();
+      }
+
+      function endQuiz() {
+        currentQuestion = questions.length;
+        displayQuestion();
+      }
+
+      startQuiz();
+
+      function restartQuiz() {
+    currentQuestion = 0;
+    correctAnswers = 0;
+    
+    displayQuestion();
+    startTimer();
+    document.getElementById("restart-button").style.display = "none"; // Hide the button
+}
+
+function startQuiz2(){
+  restartQuiz();
+  document.getElementById("first").style.display = "none";
+  document.getElementById("quiz-container").style.display = "block";
+  
+}
+    </script>
+  </body>
+</html>
